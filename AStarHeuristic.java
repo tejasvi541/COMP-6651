@@ -52,6 +52,7 @@ class Graph {
             node.h = Math.sqrt(Math.pow(d - node.x, 2) + Math.pow(d - node.y, 2));
         }
         PriorityQueue<Integer> Q = new PriorityQueue<>(Comparator.comparingInt(u -> -(nodes[u].d + (int)nodes[u].h)));
+        List<Integer> S = new ArrayList<>();
         boolean[] visited = new boolean[V];
         for (int i = 0; i < V; i++) {
             Q.add(i);
@@ -64,8 +65,12 @@ class Graph {
                 int old_d = nodes[v].d;
                 relaxMax(u, v);
                 if (nodes[v].d > old_d) {
-                    Q.remove(v);
-                    Q.add(v);
+                    if(S.contains(v)) {
+                        S.remove(S.indexOf(v));
+                        Q.add(v);
+                    }else{
+                        Q.add(v);
+                    }
                 }
             }
         }
@@ -89,6 +94,7 @@ public class AStarHeuristic {
 
         Scanner scanner = new Scanner(file);
         while (scanner.hasNextLine()) {
+
             String[] line = scanner.nextLine().split(" ");
             int v = Integer.parseInt(line[0]);
             int w = Integer.parseInt(line[1]);

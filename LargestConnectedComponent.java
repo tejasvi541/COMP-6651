@@ -44,7 +44,7 @@ class Graph {
 
 public class LargestConnectedComponent {
     public static void main(String[] args) throws FileNotFoundException {
-        File file = new File("graph.txt"); // Specify your file name
+        File file = new File("DSJC500-5\\DSJC500-5.txt"); // Specify your file name
         Scanner sc = new Scanner(file);
         
         int maxVertex = 0;
@@ -55,7 +55,7 @@ public class LargestConnectedComponent {
             maxVertex = Math.max(maxVertex, Math.max(v, w));
         }
         sc.close();
-
+        
         Graph g = new Graph(maxVertex + 1);
 
         Scanner scanner = new Scanner(file);

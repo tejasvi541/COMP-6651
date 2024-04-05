@@ -47,24 +47,27 @@ class Graph {
 
     void dijkstraMax(int s) {
     initializeSingleSourceMax(s);
-    PriorityQueue<Integer> Q = new PriorityQueue<>(Comparator.comparingInt(u -> -nodes[u].d));
-    boolean[] visited = new boolean[V];
-    for (int i = 0; i < V; i++) {
-        Q.add(i);
-    }
-    while (!Q.isEmpty()) {
-        int u = Q.poll();
-        if (visited[u]) continue;
-        visited[u] = true;
-        for (int v : adj[u]) {
-            int old_d = nodes[v].d;
-            relaxMax(u, v);
-            if (nodes[v].d > old_d) {
-                Q.add(v);
+        PriorityQueue<Integer> Q = new PriorityQueue<>(Comparator.comparingInt(u -> -nodes[u].d));
+        List<Integer> S = new ArrayList<>();
+
+        boolean[] visited = new boolean[V];
+        for (int i = 0; i < V; i++) {
+            Q.add(i);
+        }
+        while (!Q.isEmpty()) {
+            int u = Q.poll();
+            if (visited[u]) continue;
+            visited[u] = true;
+            S.add(u);
+            for (int v : adj[u]) {
+                int old_d = nodes[v].d;
+                relaxMax(u, v);
+                if (nodes[v].d > old_d) {
+                    Q.add(v);
+                }
             }
         }
     }
-}
 }
 
 public class DijkstraMax {
