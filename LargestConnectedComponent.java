@@ -18,33 +18,44 @@ class Graph {
         adj[w].add(v);
     }
 
-    int largestConnectedComponentSize() {
+    int[] largestConnectedComponentProperties() {
         boolean[] visited = new boolean[V];
-        int maxSize = 0;
+        int maxDegree = 0;
+        int sumDegree = 0;
+        int countNodes = 0;
         for (int i = 0; i < V; i++) {
             if (!visited[i]) {
-                int size = dfs(i, visited);
-                maxSize = Math.max(maxSize, size);
+                int[] properties = dfs(i, visited);
+                if (properties[2] > countNodes) {
+                    maxDegree = properties[0];
+                    sumDegree = properties[1];
+                    countNodes = properties[2];
+                }
             }
         }
-        return maxSize;
+        return new int[]{maxDegree, sumDegree / countNodes};
     }
 
-    int dfs(int v, boolean[] visited) {
+    int[] dfs(int v, boolean[] visited) {
         visited[v] = true;
-        int size = 1;
+        int maxDegree = adj[v].size();
+        int sumDegree = maxDegree;
+        int countNodes = 1;
         for (int u : adj[v]) {
             if (!visited[u]) {
-                size += dfs(u, visited);
+                int[] properties = dfs(u, visited);
+                maxDegree = Math.max(maxDegree, properties[0]);
+                sumDegree += properties[1];
+                countNodes += properties[2];
             }
         }
-        return size;
+        return new int[]{maxDegree, sumDegree, countNodes};
     }
 }
 
 public class LargestConnectedComponent {
     public static void main(String[] args) throws FileNotFoundException {
-        File file = new File("DSJC500-5\\DSJC500-5.txt"); // Specify your file name
+        File file = new File("inf-power\\inf-power.txt"); // Specify your file name
         Scanner sc = new Scanner(file);
         
         int maxVertex = 0;
@@ -67,7 +78,8 @@ public class LargestConnectedComponent {
         }
         scanner.close();
 
-        int largestComponentSize = g.largestConnectedComponentSize();
-        System.out.println("Size of Largest Connected Component: " + largestComponentSize);
+        int[] properties = g.largestConnectedComponentProperties();
+        System.out.println("Max Degree of Largest Connected Component: " + properties[0]);
+        System.out.println("Average Degree of Largest Connected Component: " + properties[1]);
     }
 }

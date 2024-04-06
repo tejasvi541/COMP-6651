@@ -58,6 +58,7 @@ class Graph {
             Q.add(i);
         }
         while (!Q.isEmpty()) {
+            System.out.println(Q.peek());
             int u = Q.poll();
             if (visited[u]) continue;
             visited[u] = true;
