@@ -1,18 +1,13 @@
 import java.io.*;
 import java.util.*;
 
-class Node implements Comparable<Node> {
+class Node {
     int id;
     int dist;
 
     public Node(int id, int dist) {
         this.id = id;
         this.dist = dist;
-    }
-
-    @Override
-    public int compareTo(Node other) {
-        return other.dist - this.dist;
     }
 }
 
@@ -36,23 +31,35 @@ class Graph {
     void dijkstraMax(int s) {
         int dist[] = new int[V];
         int prev[] = new int[V];
-        PriorityQueue<Node> pq = new PriorityQueue<>();
+        PriorityQueue<Node> pq = new PriorityQueue<>(new Comparator<Node>() {
+            @Override
+            public int compare(Node node1, Node node2) {
+                return Integer.compare(node2.dist, node1.dist);
+            }
+        });
 
         for (int i = 0; i < V; i++) {
-            dist[i] = Integer.MIN_VALUE;
-            prev[i] = -1;
             if (i == s) {
                 dist[i] = 0;
+            }else{
+                dist[i] = Integer.MIN_VALUE;
             }
+            prev[i] = -1;
+            
             pq.add(new Node(i, dist[i]));
         }
-
+        // while(!pq.isEmpty()){
+        //     Node node = pq.poll();
+        //     System.out.println(node.id + " " + node.dist);
+        // }
         while (!pq.isEmpty()) {
             Node u = pq.poll();
+            if (u.dist != dist[u.id]) {
+                continue;
+            }
 
             for (int v : adj[u.id]) {
                 if (dist[v] < dist[u.id] + 1) {
-                    pq.remove(new Node(v, dist[v]));
                     dist[v] = dist[u.id] + 1;
                     prev[v] = u.id;
                     pq.add(new Node(v, dist[v]));
@@ -80,7 +87,7 @@ class Graph {
 
 public class DijkstraMax {
     public static void main(String[] args) throws FileNotFoundException {
-        File file = new File("DSJC500-5\\DSJC500-5.txt"); // Specify your file name
+        File file = new File("graph.txt"); // Specify your file name
         Scanner sc = new Scanner(file);
         
         int maxVertex = 0;
