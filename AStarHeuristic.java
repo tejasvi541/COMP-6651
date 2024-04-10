@@ -33,6 +33,7 @@ class Graph {
         adj[w.id].add(v);
     }
 
+
     void aStarMax(int s, int d, Node[] nodes) {
         double dist[] = new double[V];
         int prev[] = new int[V];
@@ -40,7 +41,7 @@ class Graph {
         PriorityQueue<Node> pq = new PriorityQueue<>(new Comparator<Node>() {
             @Override
             public int compare(Node node1, Node node2) {
-                return Double.compare(node2.dist + node2.h, node1.dist + node1.h);
+                return Double.compare(node2.dist - node2.h, node1.dist - node1.h); // Subtract heuristic value instead of adding it
             }
         });
 
@@ -52,8 +53,7 @@ class Graph {
             }
             prev[i] = -1;
             inQueue[i] = true;
-            
-            pq.add(new Node(i, nodes[i].x, nodes[i].y, dist[i], nodes[i].h));
+            pq.add(new Node(i, nodes[i].x, nodes[i].y, dist[i], nodes[i].h)); // Negative heuristic value
         }
         while (!pq.isEmpty()) {
             Node u = pq.poll();
@@ -63,11 +63,11 @@ class Graph {
             }
 
             for (Node v : adj[u.id]) {
-                if (dist[v.id] < dist[u.id] + 1 && !inQueue[v.id]) {
+                if (dist[v.id] < dist[u.id] + 1 && !inQueue[v.id] && prev[u.id] != v.id) { // Check if the predecessor of u is not v
                     dist[v.id] = dist[u.id] + 1;
                     prev[v.id] = u.id;
                     inQueue[v.id] = true;
-                    pq.add(new Node(v.id, nodes[v.id].x, nodes[v.id].y, dist[v.id], nodes[v.id].h));
+                    pq.add(new Node(v.id, nodes[v.id].x, nodes[v.id].y, dist[v.id], -nodes[v.id].h)); // Negative heuristic value
                 }
             }
         }
@@ -93,7 +93,7 @@ class Graph {
 
 public class AStarHeuristic {
     public static void main(String[] args) throws FileNotFoundException {
-        File file = new File("graphPositional.txt"); // Specify your file name
+        File file = new File("Graphs/graphPositional.txt"); // Specify your file name
         Scanner sc = new Scanner(file);
         
         int maxVertex = 0;
@@ -120,6 +120,7 @@ public class AStarHeuristic {
             nodes[v] = new Node(v, vx, vy, 0, 0);
             nodes[w] = new Node(w, wx, wy, 0, 0);
             g.addEdge(nodes[v], nodes[w]);
+            g.addEdge(nodes[w], nodes[v]);
         }
         scanner.close();
 
