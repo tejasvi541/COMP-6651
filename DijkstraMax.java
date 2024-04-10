@@ -31,6 +31,7 @@ class Graph {
     void dijkstraMax(int s) {
         int dist[] = new int[V];
         int prev[] = new int[V];
+        boolean inQueue[] = new boolean[V];
         PriorityQueue<Node> pq = new PriorityQueue<>(new Comparator<Node>() {
             @Override
             public int compare(Node node1, Node node2) {
@@ -45,23 +46,22 @@ class Graph {
                 dist[i] = Integer.MIN_VALUE;
             }
             prev[i] = -1;
+            inQueue[i] = true;
             
             pq.add(new Node(i, dist[i]));
         }
-        // while(!pq.isEmpty()){
-        //     Node node = pq.poll();
-        //     System.out.println(node.id + " " + node.dist);
-        // }
         while (!pq.isEmpty()) {
             Node u = pq.poll();
+            inQueue[u.id] = false;
             if (u.dist != dist[u.id]) {
                 continue;
             }
 
             for (int v : adj[u.id]) {
-                if (dist[v] < dist[u.id] + 1) {
+                if (dist[v] < dist[u.id] + 1 && !inQueue[v]) {
                     dist[v] = dist[u.id] + 1;
                     prev[v] = u.id;
+                    inQueue[v] = true;
                     pq.add(new Node(v, dist[v]));
                 }
             }

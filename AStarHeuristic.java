@@ -1,108 +1,128 @@
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 class Node {
-    int d;
-    double h;
-    String color;
-    Node parent;
-    double x, y;
+    int id;
+    double dist;
+    double x, y; // Position of the node
+    double h; // Heuristic value
 
-    Node() {
-        this.color = "WHITE";
-        this.parent = null;
-        this.d = Integer.MIN_VALUE;
+    public Node(int id, double x, double y, double dist, double h) {
+        this.id = id;
+        this.x = x;
+        this.y = y;
+        this.dist = dist;
+        this.h = h;
     }
 }
 
 class Graph {
     private int V;
-    private LinkedList<Integer> adj[];
-    public Node nodes[];
+    private LinkedList<Node> adj[];
 
     Graph(int v) {
         V = v;
         adj = new LinkedList[v];
-        nodes = new Node[v];
-        for (int i=0; i<v; ++i) {
+        for (int i = 0; i < v; ++i) {
             adj[i] = new LinkedList();
-            nodes[i] = new Node();
         }
     }
 
-    void addEdge(int v,int w) {
-        adj[v].add(w);
-        adj[w].add(v);
+    void addEdge(Node v, Node w) {
+        adj[v.id].add(w);
+        adj[w.id].add(v);
     }
 
-    void initializeSingleSourceMax(int s) {
-        nodes[s].d = 0;
-    }
+    void aStarMax(int s, int d, Node[] nodes) {
+        double dist[] = new double[V];
+        int prev[] = new int[V];
+        boolean inQueue[] = new boolean[V];
+        PriorityQueue<Node> pq = new PriorityQueue<>(new Comparator<Node>() {
+            @Override
+            public int compare(Node node1, Node node2) {
+                return Double.compare(node2.dist + node2.h, node1.dist + node1.h);
+            }
+        });
 
-    void relaxMax(int u, int v) {
-        if (nodes[v].d < nodes[u].d + 1) {
-            nodes[v].d = nodes[u].d + 1;
-            nodes[v].parent = nodes[u];
-        }
-    }
-
-    void AStar(int s, int d) {
-        initializeSingleSourceMax(s);
-        for (Node node : nodes) {
-            node.h = Math.sqrt(Math.pow(d - node.x, 2) + Math.pow(d - node.y, 2));
-        }
-        PriorityQueue<Integer> Q = new PriorityQueue<>(Comparator.comparingInt(u -> -(nodes[u].d + (int)nodes[u].h)));
-        List<Integer> S = new ArrayList<>();
-        boolean[] visited = new boolean[V];
         for (int i = 0; i < V; i++) {
-            Q.add(i);
+            if (i == s) {
+                dist[i] = 0;
+            }else{
+                dist[i] = Double.NEGATIVE_INFINITY;
+            }
+            prev[i] = -1;
+            inQueue[i] = true;
+            
+            pq.add(new Node(i, nodes[i].x, nodes[i].y, dist[i], nodes[i].h));
         }
-        while (!Q.isEmpty()) {
-            System.out.println(Q.peek());
-            int u = Q.poll();
-            if (visited[u]) continue;
-            visited[u] = true;
-            for (int v : adj[u]) {
-                int old_d = nodes[v].d;
-                relaxMax(u, v);
-                if (nodes[v].d > old_d) {
-                    if(S.contains(v)) {
-                        S.remove(S.indexOf(v));
-                        Q.add(v);
-                    }else{
-                        Q.add(v);
-                    }
+        while (!pq.isEmpty()) {
+            Node u = pq.poll();
+            inQueue[u.id] = false;
+            if (u.dist != dist[u.id]) {
+                continue;
+            }
+
+            for (Node v : adj[u.id]) {
+                if (dist[v.id] < dist[u.id] + 1 && !inQueue[v.id]) {
+                    dist[v.id] = dist[u.id] + 1;
+                    prev[v.id] = u.id;
+                    inQueue[v.id] = true;
+                    pq.add(new Node(v.id, nodes[v.id].x, nodes[v.id].y, dist[v.id], nodes[v.id].h));
                 }
             }
         }
+
+        // Print the longest path
+        double maxDist = 0;
+        int endNode = -1;
+        for (int i = 0; i < V; i++) {
+            if (dist[i] > maxDist) {
+                maxDist = dist[i];
+                endNode = i;
+            }
+        }
+
+        System.out.println("Longest path length: " + maxDist);
+        System.out.print("Path: ");
+        for (int v = endNode; v != -1; v = prev[v]) {
+            System.out.print(v + " ");
+        }
+        System.out.println();
     }
 }
 
 public class AStarHeuristic {
-    public static void main(String args[]) throws FileNotFoundException {
-        File file = new File("graph.txt");
+    public static void main(String[] args) throws FileNotFoundException {
+        File file = new File("graphPositional.txt"); // Specify your file name
         Scanner sc = new Scanner(file);
+        
         int maxVertex = 0;
         while (sc.hasNextLine()) {
             String[] line = sc.nextLine().split(" ");
             int v = Integer.parseInt(line[0]);
-            int w = Integer.parseInt(line[1]);
+            int w = Integer.parseInt(line[3]);
             maxVertex = Math.max(maxVertex, Math.max(v, w));
         }
         sc.close();
-
+        
         Graph g = new Graph(maxVertex + 1);
+        Node[] nodes = new Node[maxVertex + 1];
 
         Scanner scanner = new Scanner(file);
         while (scanner.hasNextLine()) {
-
             String[] line = scanner.nextLine().split(" ");
             int v = Integer.parseInt(line[0]);
-            int w = Integer.parseInt(line[1]);
-            g.addEdge(v, w);
+            double vx = Double.parseDouble(line[1]);
+            double vy = Double.parseDouble(line[2]);
+            int w = Integer.parseInt(line[3]);
+            double wx = Double.parseDouble(line[4]);
+            double wy = Double.parseDouble(line[5]);
+            nodes[v] = new Node(v, vx, vy, 0, 0);
+            nodes[w] = new Node(w, wx, wy, 0, 0);
+            g.addEdge(nodes[v], nodes[w]);
         }
         scanner.close();
-        g.AStar(0, maxVertex);
-        System.out.println("Longest simple path length: " + Arrays.stream(g.nodes).mapToInt(node -> node.d).max().getAsInt());
+
+        g.aStarMax(0, maxVertex, nodes); // Assuming 0 as the source node and maxVertex as the destination node
     }
 }

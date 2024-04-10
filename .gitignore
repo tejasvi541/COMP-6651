@@ -1,2 +1,6 @@
 **/*.class
 ./Graph.class
+out
+.idea
+.vscode
+COMP6651.iml
