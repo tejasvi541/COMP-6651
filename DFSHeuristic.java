@@ -32,6 +32,40 @@ class Graph {
      adj[w].add(v);
  }
 
+  int[] largestConnectedComponentProperties() {
+     boolean[] visited = new boolean[V];
+     int maxDegree = 0;
+     int sumDegree = 0;
+     int countNodes = 0;
+     for (int i = 0; i < V; i++) {
+         if (!visited[i]) {
+             int[] properties = dfs(i, visited);
+             if (properties[2] > countNodes) {
+                 maxDegree = properties[0];
+                 sumDegree = properties[1];
+                 countNodes = properties[2];
+             }
+         }
+     }
+     return new int[]{maxDegree, sumDegree / countNodes, countNodes};
+ }
+
+ int[] dfs(int v, boolean[] visited) {
+     visited[v] = true;
+     int maxDegree = adj[v].size();
+     int sumDegree = maxDegree;
+     int countNodes = 1;
+     for (int u : adj[v]) {
+         if (!visited[u]) {
+             int[] properties = dfs(u, visited);
+             maxDegree = Math.max(maxDegree, properties[0]);
+             sumDegree += properties[1];
+             countNodes += properties[2];
+         }
+     }
+     return new int[]{maxDegree, sumDegree, countNodes};
+ }
+
  int DFS(int startVertex) {
      int time = 0;
      time = DFSVisit(startVertex, time);
@@ -62,8 +96,9 @@ class Graph {
  int DFSHeuristic() {
      int Lmax = 0;
      Random rand = new Random();
-     for (int i = 0; i < Math.sqrt(V); i++) {
-         int u = rand.nextInt(V);
+     int[] properties=this.largestConnectedComponentProperties();
+     for (int i = 0; i < Math.sqrt(properties[2]); i++) {
+         int u = rand.nextInt(properties[2]);
          DFS(u);
          int v = -1, maxDepth = -1;
          for (int j = 0; j < V; j++) {
