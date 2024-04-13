@@ -41,7 +41,7 @@ class Graph {
 
        for (int i = 0; i < V; i++) {
            if (i == s) {
-               dist[i] = 0;
+               dist[i] = 1;
            }else{
                dist[i] = Integer.MIN_VALUE;
            }
@@ -50,6 +50,7 @@ class Graph {
 
            pq.add(new Node(i, dist[i]));
        }
+
        while (!pq.isEmpty()) {
            Node u = pq.poll();
            inQueue[u.id] = false;
@@ -58,7 +59,7 @@ class Graph {
            }
 
            for (int v : adj[u.id]) {
-               if (dist[v] < dist[u.id] + 1 && !inQueue[v]) {
+               if (dist[v] < dist[u.id] + 1 && inQueue[v]) {
                    dist[v] = dist[u.id] + 1;
                    prev[v] = u.id;
                    inQueue[v] = true;
@@ -111,6 +112,8 @@ public class DijkstraMax {
        }
        scanner.close();
 
-       g.dijkstraMax(0); // Assuming 0 as the source node
+       for(int i=0;i<maxVertex+1;i++){
+           g.dijkstraMax(i); // Assuming 0 as the source node
+       }
    }
 }
