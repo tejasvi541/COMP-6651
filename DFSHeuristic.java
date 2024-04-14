@@ -44,6 +44,7 @@ class Graph {
     private LinkedList<Integer> adj[];
     public Node nodes[];
     private List<Edge> edges;
+    private static final int MAX_ATTEMPTS = 1000;
 
     Graph(int v) {
         V = v;
@@ -62,18 +63,7 @@ class Graph {
         edges.add(new Edge(nodes[v], nodes[w]));
     }
 
-    int DFS(int startVertex) {
-        int time = 0;
-        time = DFSVisit(nodes[startVertex], time);
-        for (int i = 0; i < V; i++) {
-            if (nodes[i].color == 0) {
-                time = DFSVisit(nodes[i], time);
-            }
-        }
-        return time;
-    }
-
-    int DFSVisit(Node startNode, int time) {
+    Node DFSVisit(Node startNode, int time) {
         startNode.visited = true;
         startNode.color = 1; // GRAY
         time++;
@@ -84,42 +74,58 @@ class Graph {
                 Node neighbor = edge.getOther(startNode);
                 if (neighbor.color == 0) { // WHITE
                     neighbor.parent = startNode;
-                    time = DFSVisit(neighbor, time);
+                    DFSVisit(neighbor, time);
                 }
             }
         }
 
         startNode.color = 2; // BLACK
-        return time;
+        return startNode;
     }
 
     int DFSHeuristic() {
-        int Lmax = 0;
-        Random rand = new Random();
-        for (int i = 0; i < Math.sqrt(V); i++) {
-            int u = rand.nextInt(V);
-            DFS(u);
-            Node v = null;
-            int maxDepth = -1;
-            for (int j = 0; j < V; j++) {
-                if (nodes[j].depth > maxDepth) {
-                    v = nodes[j];
-                    maxDepth = nodes[j].depth;
-                }
+        int maxLength = 0;
+
+        if (nodes.length > 0) {
+            for (int i = 0; i < MAX_ATTEMPTS; i++) {
+                Node startNode = nodes[new Random().nextInt(nodes.length)];
+                resetNodes();
+                DFSVisit(startNode, 0);
+
+                Node maxDepthNode = findMaxDepthNode();
+                resetNodes();
+                DFSVisit(maxDepthNode, 0);
+
+                maxLength = Math.max(maxLength, findMaxDepthNode().depth);
             }
-            DFS(v.id);
-            Node w = null;
-            maxDepth = -1;
-            for (int j = 0; j < V; j++) {
-                if (nodes[j].depth > maxDepth) {
-                    w = nodes[j];
-                    maxDepth = nodes[j].depth;
-                }
-            }
-            Lmax = Math.max(Lmax, v.depth);
-            Lmax = Math.max(Lmax, w.depth);
+        } else {
+            System.err.println("Error: Node list is empty.");
         }
-        return Lmax;
+
+        return maxLength;
+    }
+
+    void resetNodes() {
+        for (Node node : nodes) {
+            node.depth = 0;
+            node.parent = null;
+            node.visited = false;
+            node.color = 0; // WHITE
+        }
+    }
+
+    Node findMaxDepthNode() {
+        Node maxDepthNode = null;
+        int maxDepth = 0;
+
+        for (Node node : nodes) {
+            if (node.depth > maxDepth) {
+                maxDepth = node.depth;
+                maxDepthNode = node;
+            }
+        }
+
+        return maxDepthNode;
     }
 }
 
