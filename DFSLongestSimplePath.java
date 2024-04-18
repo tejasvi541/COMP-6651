@@ -178,7 +178,7 @@ public class DFSLongestSimplePath {
     }
 
     public static void main(String[] args) {
-        runDFSLongestSimplePath("Graphs/graph.txt");
+        runDFSLongestSimplePath("Graphs/graph500r24.txt");
     }
 
     private static void runDFSLongestSimplePath(String fileName) {

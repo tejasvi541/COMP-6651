@@ -4,6 +4,7 @@ import java.util.*;
 class Graph {
 private int V;
 private LinkedList<Integer> adj[];
+public List<String> edges = new ArrayList<>();
 
 Graph(int v) {
    V = v;
@@ -18,7 +19,7 @@ void addEdge(int v, int w) {
    adj[w].add(v);
 }
 
-int[] largestConnectedComponentProperties() {
+int[] largestConnectedComponentProperties() throws IOException {
    boolean[] visited = new boolean[V];
    int maxDegree = 0;
    int sumDegree = 0;
@@ -33,6 +34,11 @@ int[] largestConnectedComponentProperties() {
            }
        }
    }
+   try (PrintWriter writer = new PrintWriter(new File("Graphs/lccgraph.txt"))) {
+        for (String edge : edges) {
+            writer.println(edge);
+        }
+    }
    return new int[]{maxDegree, sumDegree / countNodes, countNodes};
 }
 
@@ -53,34 +59,38 @@ int[] dfs(int v, boolean[] visited) {
 }
 }
 
-public class LargestConnectedComponent {
-public static void main(String[] args) throws FileNotFoundException {
-   File file = new File("Graphs/graph.txt"); // Specify your file name
-   Scanner sc = new Scanner(file);
+    public class LargestConnectedComponent {
+    public static void main(String[] args) throws FileNotFoundException {
+    File file = new File("Graphs/DSJC500-5.txt"); // Specify your file name
+    Scanner sc = new Scanner(file);
 
-   int maxVertex = 0;
-   while (sc.hasNextLine()) {
-       String[] line = sc.nextLine().split(" ");
-       int v = Integer.parseInt(line[0]);
-       int w = Integer.parseInt(line[1]);
-       maxVertex = Math.max(maxVertex, Math.max(v, w));
-   }
-   sc.close();
+    int maxVertex = 0;
+    while (sc.hasNextLine()) {
+        String[] line = sc.nextLine().split(" ");
+        int v = Integer.parseInt(line[0]);
+        int w = Integer.parseInt(line[1]);
+        maxVertex = Math.max(maxVertex, Math.max(v, w));
+    }
+    sc.close();
 
-   Graph g = new Graph(maxVertex + 1);
+    Graph g = new Graph(maxVertex + 1);
 
-   Scanner scanner = new Scanner(file);
-   while (scanner.hasNextLine()) {
-       String[] line = scanner.nextLine().split(" ");
-       int v = Integer.parseInt(line[0]);
-       int w = Integer.parseInt(line[1]);
-       g.addEdge(v, w);
-   }
-   scanner.close();
-
-   int[] properties = g.largestConnectedComponentProperties();
-   System.out.println("Max Degree of Largest Connected Component: " + properties[0]);
-   System.out.println("Average Degree of Largest Connected Component: " + properties[1]);
-   System.out.println("Number of Nodes in Largest Connected Component: " + properties[2]);
-}
+    Scanner scanner = new Scanner(file);
+    while (scanner.hasNextLine()) {
+        String[] line = scanner.nextLine().split(" ");
+        int v = Integer.parseInt(line[0]);
+        int w = Integer.parseInt(line[1]);
+        g.addEdge(v, w);
+    }
+    scanner.close();
+    int[] properties = new int[3];
+    try{
+        properties = g.largestConnectedComponentProperties();
+    }catch(IOException e){
+        System.out.println("Error: " + e);
+    }
+    System.out.println("Max Degree of Largest Connected Component: " + properties[0]);
+    System.out.println("Average Degree of Largest Connected Component: " + properties[1]);
+    System.out.println("Number of Nodes in Largest Connected Component: " + properties[2]);
+    }
 }

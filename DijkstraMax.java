@@ -14,7 +14,9 @@ class Node {
 class Graph {
    private int V;
    private LinkedList<Integer> adj[];
-
+    public static int maxDistance=0;
+    public static int maxEnd=-1;
+    public int prev[]=new int[100000];
    Graph(int v) {
        V = v;
        adj = new LinkedList[v];
@@ -30,7 +32,7 @@ class Graph {
 
    void dijkstraMax(int s) {
        int dist[] = new int[V];
-       int prev[] = new int[V];
+    //    int prev[] = new int[V];
        boolean inQueue[] = new boolean[V];
        PriorityQueue<Node> pq = new PriorityQueue<>(new Comparator<Node>() {
            @Override
@@ -76,19 +78,22 @@ class Graph {
                endNode = i;
            }
        }
-
-       System.out.println("Longest path length: " + maxDist);
-       System.out.print("Path: ");
-       for (int v = endNode; v != -1; v = prev[v]) {
-           System.out.print(v + " ");
-       }
-       System.out.println();
+         if(maxDist>maxDistance){
+              maxDistance=maxDist;
+              maxEnd=endNode;
+         }
+      System.out.println("Longest path length: " + maxDist);
+      System.out.print("Path: ");
+      for (int v = endNode; v != -1; v = prev[v]) {
+          System.out.print(v + " ");
+      }
+      System.out.println();
    }
 }
 
 public class DijkstraMax {
    public static void main(String[] args) throws FileNotFoundException {
-       File file = new File("Graphs/graph.txt"); // Specify your file name
+       File file = new File("Graphs/graph400r26.txt"); // Specify your file name
        Scanner sc = new Scanner(file);
 
        int maxVertex = 0;
@@ -111,9 +116,15 @@ public class DijkstraMax {
            g.addEdge(w, v);
        }
        scanner.close();
-
+       System.out.println(maxVertex);
        for(int i=0;i<maxVertex+1;i++){
-           g.dijkstraMax(i); // Assuming 0 as the source node
+           g.dijkstraMax(i);
        }
+        System.out.println("Longest simple path length: " + Graph.maxDistance);
+        System.out.print("Path: ");
+        for (int v = Graph.maxEnd; v != -1; v = g.prev[v]) {
+           System.out.print(v + " ");
+        }
+        System.out.println();
    }
 }

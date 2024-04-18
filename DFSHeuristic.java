@@ -44,7 +44,7 @@ class Graph {
     private LinkedList<Integer> adj[];
     public Node nodes[];
     private List<Edge> edges;
-    private static final int MAX_ATTEMPTS = 1000;
+    private static final int MAX_ATTEMPTS = 10000;
 
     Graph(int v) {
         V = v;
@@ -89,7 +89,7 @@ class Graph {
         if (nodes.length > 0) {
             for (int i = 0; i < MAX_ATTEMPTS; i++) {
                 Node startNode = nodes[new Random().nextInt(nodes.length)];
-                resetNodes();
+//                resetNodes();
                 DFSVisit(startNode, 0);
 
                 Node maxDepthNode = findMaxDepthNode();
@@ -131,7 +131,7 @@ class Graph {
 
 public class DFSHeuristic {
     public static void main(String args[]) throws FileNotFoundException {
-        File file = new File("Graphs/graph.txt");
+        File file = new File("Graphs/DSJC500-5.txt");
         Scanner sc = new Scanner(file);
         int maxVertex = 0;
         while (sc.hasNextLine()) {
