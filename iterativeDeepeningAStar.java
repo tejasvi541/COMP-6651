@@ -40,7 +40,7 @@ class Graph {
         PriorityQueue<Node> pq = new PriorityQueue<>(new Comparator<Node>() {
             @Override
             public int compare(Node node1, Node node2) {
-                return Double.compare(node2.dist + node2.h, node1.dist + node1.h); // Subtract heuristic value instead of adding it
+                return Double.compare(node2.dist + node2.h, node1.dist + node1.h);
             }
         });
         for (int i = 0; i < V; i++){
@@ -48,7 +48,6 @@ class Graph {
                 continue;
             }
             nodes[i].h = Math.sqrt(Math.pow(nodes[i].x - nodes[d].x, 2) + Math.pow(nodes[i].y - nodes[d].y, 2)); // Euclidean distance
-            // System.out.println(nodes[i].id);
         }
         for (int i = 0; i < V; i++) {
             if(nodes[i] == null){
@@ -98,10 +97,9 @@ class Graph {
         System.out.println();
     }
 }
-
-public class AStarHeuristic {
-    public static void main(String[] args) throws FileNotFoundException {
-        File file = new File("Graphs/graphPositional.txt"); // Specify your file name
+public class iterativeDeepeningAStar {
+        public static void main(String[] args) throws FileNotFoundException {
+        File file = new File("Graphs/graphPositional300r28.txt"); // Specify your file name
         Scanner sc = new Scanner(file);
 
         int maxVertex = 0;
@@ -132,6 +130,6 @@ public class AStarHeuristic {
         }
         scanner.close();
 
-        g.aStarMax(6, 9, nodes); // Assuming 0 as the source node and maxVertex as the destination node
+        g.aStarMax(1, maxVertex, nodes); // Assuming 0 as the source node and maxVertex as the destination node
     }
 }

@@ -43,7 +43,7 @@ class Graph {
 
        for (int i = 0; i < V; i++) {
            if (i == s) {
-               dist[i] = 1;
+               dist[i] = 0;
            }else{
                dist[i] = Integer.MIN_VALUE;
            }
@@ -93,7 +93,7 @@ class Graph {
 
 public class DijkstraMax {
    public static void main(String[] args) throws FileNotFoundException {
-       File file = new File("Graphs/graph400r26.txt"); // Specify your file name
+       File file = new File("Graphs/graph.txt"); // Specify your file name
        Scanner sc = new Scanner(file);
 
        int maxVertex = 0;
@@ -116,15 +116,15 @@ public class DijkstraMax {
            g.addEdge(w, v);
        }
        scanner.close();
-       System.out.println(maxVertex);
+
        for(int i=0;i<maxVertex+1;i++){
            g.dijkstraMax(i);
        }
         System.out.println("Longest simple path length: " + Graph.maxDistance);
-        System.out.print("Path: ");
-        for (int v = Graph.maxEnd; v != -1; v = g.prev[v]) {
-           System.out.print(v + " ");
-        }
-        System.out.println();
+        // System.out.print("Path: ");
+        // for (int v = Graph.maxEnd; v != -1; v = g.prev[v]) {
+        //    System.out.print(v + " ");
+        // }
+        // System.out.println();
    }
 }

@@ -131,7 +131,7 @@ class Graph {
 
 public class DFSHeuristic {
     public static void main(String args[]) throws FileNotFoundException {
-        File file = new File("Graphs/DSJC500-5.txt");
+        File file = new File("Graphs/graph.txt");
         Scanner sc = new Scanner(file);
         int maxVertex = 0;
         while (sc.hasNextLine()) {

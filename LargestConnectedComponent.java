@@ -61,7 +61,7 @@ int[] dfs(int v, boolean[] visited) {
 
     public class LargestConnectedComponent {
     public static void main(String[] args) throws FileNotFoundException {
-    File file = new File("Graphs/DSJC500-5.txt"); // Specify your file name
+    File file = new File("Graphs/graph.txt"); // Specify your file name
     Scanner sc = new Scanner(file);
 
     int maxVertex = 0;
