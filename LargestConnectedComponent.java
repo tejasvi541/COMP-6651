@@ -59,38 +59,53 @@ int[] dfs(int v, boolean[] visited) {
 }
 }
 
-    public class LargestConnectedComponent {
+    public class LargestConnectedComponent  {
+
+        public void runner (String p_file) throws FileNotFoundException{
+            File file = new File(p_file); // Specify your file name
+            Scanner sc = new Scanner(file);
+
+            int maxVertex = 0;
+            while (sc.hasNextLine()) {
+                String[] line = sc.nextLine().split(" ");
+                int v = Integer.parseInt(line[0]);
+                int w = Integer.parseInt(line[1]);
+                maxVertex = Math.max(maxVertex, Math.max(v, w));
+            }
+            sc.close();
+
+            Graph g = new Graph(maxVertex + 1);
+
+            Scanner scanner = new Scanner(file);
+            while (scanner.hasNextLine()) {
+                String[] line = scanner.nextLine().split(" ");
+                int v = Integer.parseInt(line[0]);
+                int w = Integer.parseInt(line[1]);
+                g.addEdge(v, w);
+            }
+            scanner.close();
+            int[] properties = new int[3];
+            try{
+                properties = g.largestConnectedComponentProperties();
+            }catch(IOException e){
+                System.out.println("Error: " + e);
+            }
+            System.out.println("File: " + p_file);
+            System.out.println("Max Degree of Largest Connected Component: " + properties[0]);
+            System.out.println("Average Degree of Largest Connected Component: " + properties[1]);
+            System.out.println("Number of Nodes in Largest Connected Component: " + properties[2]);
+            System.out.println();
+        }
+
     public static void main(String[] args) throws FileNotFoundException {
-    File file = new File("Graphs/graph.txt"); // Specify your file name
-    Scanner sc = new Scanner(file);
-
-    int maxVertex = 0;
-    while (sc.hasNextLine()) {
-        String[] line = sc.nextLine().split(" ");
-        int v = Integer.parseInt(line[0]);
-        int w = Integer.parseInt(line[1]);
-        maxVertex = Math.max(maxVertex, Math.max(v, w));
-    }
-    sc.close();
-
-    Graph g = new Graph(maxVertex + 1);
-
-    Scanner scanner = new Scanner(file);
-    while (scanner.hasNextLine()) {
-        String[] line = scanner.nextLine().split(" ");
-        int v = Integer.parseInt(line[0]);
-        int w = Integer.parseInt(line[1]);
-        g.addEdge(v, w);
-    }
-    scanner.close();
-    int[] properties = new int[3];
-    try{
-        properties = g.largestConnectedComponentProperties();
-    }catch(IOException e){
-        System.out.println("Error: " + e);
-    }
-    System.out.println("Max Degree of Largest Connected Component: " + properties[0]);
-    System.out.println("Average Degree of Largest Connected Component: " + properties[1]);
-    System.out.println("Number of Nodes in Largest Connected Component: " + properties[2]);
+        LargestConnectedComponent lcc = new LargestConnectedComponent();
+        lcc.runner("Graphs/graph.txt");
+        lcc.runner("Graphs/graph300r28.txt");
+        lcc.runner("Graphs/graph400r26.txt");
+        lcc.runner("Graphs/graph500r24.txt");
+        lcc.runner("Graphs/DSJC500-5.txt");
+        lcc.runner("Graphs/inf-euroroad.txt");
+        lcc.runner("Graphs/inf-power.txt");
+        
     }
 }

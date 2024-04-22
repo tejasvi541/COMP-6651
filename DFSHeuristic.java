@@ -44,7 +44,7 @@ class Graph {
     private LinkedList<Integer> adj[];
     public Node nodes[];
     private List<Edge> edges;
-    private static final int MAX_ATTEMPTS = 10000;
+    private static final int MAX_ATTEMPTS = 1000;
 
     Graph(int v) {
         V = v;
@@ -89,7 +89,6 @@ class Graph {
         if (nodes.length > 0) {
             for (int i = 0; i < MAX_ATTEMPTS; i++) {
                 Node startNode = nodes[new Random().nextInt(nodes.length)];
-//                resetNodes();
                 DFSVisit(startNode, 0);
 
                 Node maxDepthNode = findMaxDepthNode();
@@ -130,9 +129,10 @@ class Graph {
 }
 
 public class DFSHeuristic {
-    public static void main(String args[]) throws FileNotFoundException {
-        File file = new File("Graphs/graph.txt");
+    public void runner(String p_file) throws FileNotFoundException {
+        File file = new File(p_file);
         Scanner sc = new Scanner(file);
+
         int maxVertex = 0;
         while (sc.hasNextLine()) {
             String[] line = sc.nextLine().split(" ");
@@ -152,6 +152,18 @@ public class DFSHeuristic {
             g.addEdge(v, w);
         }
         scanner.close();
+        System.out.println("Graph: " + p_file);
         System.out.println("Longest simple path length: " + g.DFSHeuristic());
+        System.out.println();
+    }
+    public static void main(String args[]) throws FileNotFoundException {
+        DFSHeuristic dfs = new DFSHeuristic();
+        dfs.runner("Graphs/graph.txt");
+        dfs.runner("Graphs/graph300r28.txt");
+        dfs.runner("Graphs/graph400r26.txt");
+        dfs.runner("Graphs/graph500r24.txt");
+        dfs.runner("Graphs/inf-euroroad.txt");
+        dfs.runner("Graphs/inf-power.txt");
+        dfs.runner("Graphs/DSJC500-5.txt");
     }
 }
