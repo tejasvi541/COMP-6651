@@ -68,8 +68,16 @@ int[] dfs(int v, boolean[] visited) {
             int maxVertex = 0;
             while (sc.hasNextLine()) {
                 String[] line = sc.nextLine().split(" ");
-                int v = Integer.parseInt(line[0]);
-                int w = Integer.parseInt(line[1]);
+                int v;
+                int w;
+                if(line.length == 1) continue;
+                if(line.length > 2) {
+                     v = Integer.parseInt(line[0]);
+                     w = Integer.parseInt(line[3]);
+                }else{
+                     v = Integer.parseInt(line[0]);
+                     w = Integer.parseInt(line[1]);
+                }
                 maxVertex = Math.max(maxVertex, Math.max(v, w));
             }
             sc.close();
@@ -79,8 +87,15 @@ int[] dfs(int v, boolean[] visited) {
             Scanner scanner = new Scanner(file);
             while (scanner.hasNextLine()) {
                 String[] line = scanner.nextLine().split(" ");
-                int v = Integer.parseInt(line[0]);
-                int w = Integer.parseInt(line[1]);
+                int v;
+                int w;
+                if(line.length > 2) {
+                     v = Integer.parseInt(line[0]);
+                     w = Integer.parseInt(line[3]);
+                }else{
+                     v = Integer.parseInt(line[0]);
+                     w = Integer.parseInt(line[1]);
+                }
                 g.addEdge(v, w);
             }
             scanner.close();
@@ -106,6 +121,8 @@ int[] dfs(int v, boolean[] visited) {
         lcc.runner("Graphs/DSJC500-5.txt");
         lcc.runner("Graphs/inf-euroroad.txt");
         lcc.runner("Graphs/inf-power.txt");
-        
+        lcc.runner("Graphs/graphPositional-DSJC500-5.txt");
+        lcc.runner("Graphs/graphPositional-inf-euroroad.txt");
+        lcc.runner("Graphs/graphPositional-inf-power.txt");
     }
 }

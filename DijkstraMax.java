@@ -125,11 +125,12 @@ public class DijkstraMax {
         System.out.println("Longest simple path length: " + Graph.maxDistance);
         System.out.println();
         Graph.maxDistance=0;
-        // System.out.print("Path: ");
-        // for (int v = Graph.maxEnd; v != -1; v = g.prev[v]) {
-        //    System.out.print(v + " ");
-        // }
-        // System.out.println();
+        System.out.print("Path: ");
+        for (int v = Graph.maxEnd; v != -1; v = g.prev[v]) {
+           System.out.print(v + " ");
+        }
+        System.out.println();
+        Graph.maxEnd=-1;
     }
 
    public static void main(String[] args) throws FileNotFoundException {

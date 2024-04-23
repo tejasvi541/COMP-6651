@@ -11,8 +11,8 @@ Node(double x, double y) {
 
 public class GraphGenerator {
 public static void main(String[] args) throws IOException {
-    int n = 10; // number of vertices
-    double r = 0.5; // maximum distance between nodes sharing an edge
+    int n = 500; // number of vertices
+    double r = 0.66; // maximum distance between nodes sharing an edge
     generateGeometricGraph(n, r);
 }
 

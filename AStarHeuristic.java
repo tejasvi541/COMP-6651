@@ -19,7 +19,7 @@ class Node {
 class Graph {
     private int V;
     private LinkedList<Node> adj[];
-
+    public double maxDist;
     Graph(int v) {
         V = v;
         adj = new LinkedList[v];
@@ -40,7 +40,7 @@ class Graph {
         PriorityQueue<Node> pq = new PriorityQueue<>(new Comparator<Node>() {
             @Override
             public int compare(Node node1, Node node2) {
-                return Double.compare(node2.dist + node2.h, node1.dist + node1.h); // Subtract heuristic value instead of adding it
+                return Double.compare(node2.dist + node2.h, node1.dist + node1.h); 
             }
         });
         for (int i = 0; i < V; i++){
@@ -48,7 +48,6 @@ class Graph {
                 continue;
             }
             nodes[i].h = Math.sqrt(Math.pow(nodes[i].x - nodes[d].x, 2) + Math.pow(nodes[i].y - nodes[d].y, 2)); // Euclidean distance
-            // System.out.println(nodes[i].id);
         }
         for (int i = 0; i < V; i++) {
             if(nodes[i] == null){
@@ -81,7 +80,7 @@ class Graph {
         }
 
         // Print the longest path
-        double maxDist = 0;
+        maxDist = 0;
         int endNode = -1;
         for (int i = 0; i < V; i++) {
             if (dist[i] > maxDist) {
@@ -90,7 +89,7 @@ class Graph {
             }
         }
 
-        System.out.println("Longest path length: " + maxDist);
+        // System.out.println("Longest path length: " + maxDist);
         // System.out.print("Path: ");
         // for (int v = endNode; v != -1; v = prev[v]) {
         //     System.out.print(v + " ");
@@ -130,17 +129,33 @@ public class AStarHeuristic {
             g.addEdge(nodes[v], nodes[w]);
             g.addEdge(nodes[w], nodes[v]);
         }
+        double maxDist = 0;
         scanner.close();
         System.out.println("Graph: " + p_file);
-        g.aStarMax(1, maxVertex, nodes); 
+        for(int i=1; i<maxVertex; i++){
+            for(int j=1; j<maxVertex; j++){
+                if(i == j || nodes[i] == null || nodes[j] == null){
+                    continue;
+                }
+                for (int k = 0; k < maxVertex + 1; k++) {
+                    if(nodes[k] == null){
+                        continue;
+                    }
+                    nodes[k] = new Node(nodes[k].id, nodes[k].x, nodes[k].y, 0, 0);;
+                }
+                g.aStarMax(i, j, nodes); 
+                maxDist = Math.max(maxDist, g.maxDist);
+            }
+        }
+        System.out.println("Longest path length: " + maxDist);
         System.out.println();
     }
     public static void main(String[] args) throws FileNotFoundException {
         AStarHeuristic astar = new AStarHeuristic();
-        astar.runner("Graphs/graphPositional.txt");
-        astar.runner("Graphs/graphPositional300r28.txt");
-        astar.runner("Graphs/graphPositional400r26.txt");
-        astar.runner("Graphs/graphPositional500r24.txt");
+        // astar.runner("Graphs/graphPositional.txt");
+        // astar.runner("Graphs/graphPositional300r28.txt");
+        // astar.runner("Graphs/graphPositional400r26.txt");
+        // astar.runner("Graphs/graphPositional500r24.txt");
         astar.runner("Graphs/graphPositional-inf-euroroad.txt");
     }
 }
