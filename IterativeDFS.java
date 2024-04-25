@@ -44,7 +44,7 @@ class Graph {
     private LinkedList<Integer> adj[];
     public Node nodes[];
     private List<Edge> edges;
-    private static final int MAX_ATTEMPTS = 10000;
+    private static final int MAX_ATTEMPTS = 1000;
 
     Graph(int v) {
         V = v;

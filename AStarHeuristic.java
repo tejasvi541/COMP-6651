@@ -144,7 +144,7 @@ public class AStarHeuristic {
     }
     public static void main(String[] args) throws FileNotFoundException {
         AStarHeuristic astar = new AStarHeuristic();
-        astar.runner("Graphs/graphPositional.txt");
+        astar.runner("Graphs/smallgraphPositional.txt");
         astar.runner("Graphs/graphPositional300r28.txt");
         astar.runner("Graphs/graphPositional400r26.txt");
         astar.runner("Graphs/graphPositional500r24.txt");
