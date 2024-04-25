@@ -79,7 +79,6 @@ class Graph {
             }
         }
 
-        // Print the longest path
         maxDist = 0;
         int endNode = -1;
         for (int i = 0; i < V; i++) {
@@ -88,13 +87,6 @@ class Graph {
                 endNode = i;
             }
         }
-
-        // System.out.println("Longest path length: " + maxDist);
-        // System.out.print("Path: ");
-        // for (int v = endNode; v != -1; v = prev[v]) {
-        //     System.out.print(v + " ");
-        // }
-        // System.out.println();
     }
 }
 
@@ -141,7 +133,7 @@ public class AStarHeuristic {
                     if(nodes[k] == null){
                         continue;
                     }
-                    nodes[k] = new Node(nodes[k].id, nodes[k].x, nodes[k].y, 0, 0);;
+                    nodes[k] = new Node(nodes[k].id, nodes[k].x, nodes[k].y, 0, 0);
                 }
                 g.aStarMax(i, j, nodes); 
                 maxDist = Math.max(maxDist, g.maxDist);
@@ -152,7 +144,7 @@ public class AStarHeuristic {
     }
     public static void main(String[] args) throws FileNotFoundException {
         AStarHeuristic astar = new AStarHeuristic();
-        astar.runner("Graphs/smallgraphPositional.txt");
+        astar.runner("Graphs/graphPositional.txt");
         astar.runner("Graphs/graphPositional300r28.txt");
         astar.runner("Graphs/graphPositional400r26.txt");
         astar.runner("Graphs/graphPositional500r24.txt");

@@ -33,30 +33,35 @@ class Graph {
         adj[w.id].add(v);
     }
 
-    double iterativeDeepeningAStarMax(int s, Node[] nodes) {
+    void iterativeDeepeningAStarMax(int s, int d, Node[] nodes) {
+        for (int i = 0; i < V; i++){
+            if(nodes[i] == null){
+                continue;
+            }
+            nodes[i].h = Math.sqrt(Math.pow(nodes[i].x - nodes[d].x, 2) + Math.pow(nodes[i].y - nodes[d].y, 2)); // Euclidean distance
+        }
         double threshold = nodes[s].h;
         while (true) {
-            double temp = search(nodes[s], 0, threshold, nodes);
-            if (temp == -1) return maxDist;
-            if (temp == Double.POSITIVE_INFINITY) return maxDist;
+            double temp = search(nodes[s], 0, threshold, nodes, d, new HashSet<>());
+            if (temp == -1) return;
+            if (temp == Double.POSITIVE_INFINITY) return;
             threshold = temp;
         }
     }
 
-    double search(Node node, double g, double threshold, Node[] nodes) {
+    double search(Node node, double g, double threshold, Node[] nodes, int d, Set<Integer> visited) {
         double f = g + node.h;
         if (f > threshold) return f;
-        double min = Double.POSITIVE_INFINITY;
+        if (node.id == d) return -1;
+        double max = Double.NEGATIVE_INFINITY; // Change here: initialize to negative infinity
+        visited.add(node.id);
         for (Node nextNode : adj[node.id]) {
-            if (nextNode.id == node.id) continue; // Skip if the next node is the same as the current node
-            double temp = search(nextNode, g + 1, threshold, nodes);
-            if (temp == -1) {
-                maxDist = Math.max(maxDist, g + 1); // Update maxDist if a leaf node is reached
-                return -1;
-            }
-            if (temp < min) min = temp;
+            if (nextNode.id == node.id || visited.contains(nextNode.id)) continue;
+            double temp = search(nextNode, g + 1, threshold, nodes, d, new HashSet<>(visited));
+            if (temp == -1) return -1;
+            if (temp > max) max = temp; // Change here: update max if temp is greater
         }
-        return min;
+        return maxDist = max; // Change here: return max instead of min
     }
 }
 public class iterativeDeepeningAStar {
@@ -92,7 +97,7 @@ public class iterativeDeepeningAStar {
         }
         scanner.close();
 
-        g.iterativeDeepeningAStarMax(2,  nodes); // Assuming 0 as the source node and maxVertex as the destination node
+        g.iterativeDeepeningAStarMax(2, maxVertex, nodes); // Assuming 0 as the source node and maxVertex as the destination node
         System.out.println(g.maxDist);
     }
 }

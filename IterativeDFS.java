@@ -63,37 +63,48 @@ class Graph {
         edges.add(new Edge(nodes[v], nodes[w]));
     }
 
-    Node DFSVisit(Node startNode, int time) {
-        startNode.visited = true;
-        startNode.color = 1; // GRAY
-        time++;
-        startNode.depth = time;
-
+    Node DFSVisit(Node startNode, int time, boolean[] visited) { // Added visited array as parameter
+    Stack<Node> stack = new Stack<>();
+    stack.push(startNode);
+    visited[startNode.id] = true; // Mark the node as visited
+    startNode.color = 1; // GRAY
+    while (!stack.isEmpty()) {
+        Node node = stack.peek();
         for (Edge edge : edges) {
-            if (edge.contains(startNode)) {
-                Node neighbor = edge.getOther(startNode);
-                if (neighbor.color == 0) { // WHITE
-                    neighbor.parent = startNode;
-                    DFSVisit(neighbor, time);
+            if (edge.contains(node)) {
+                Node neighbor = edge.getOther(node);
+                if (!visited[neighbor.id]) { // Check if the node has been visited
+                    neighbor.parent = node;
+                    visited[neighbor.id] = true; // Mark the node as visited
+                    neighbor.color = 1; // GRAY
+                    time++;
+                    neighbor.depth = time;
+                    stack.push(neighbor);
                 }
             }
         }
 
-        startNode.color = 2; // BLACK
-        return startNode;
+        node.color = 2; // BLACK
+        stack.pop();
     }
+
+    return startNode;
+}
 
     int DFSHeuristic() {
         int maxLength = 0;
+        boolean[] visited = new boolean[nodes.length]; // Initialize visited array
 
         if (nodes.length > 0) {
             for (int i = 0; i < MAX_ATTEMPTS; i++) {
                 Node startNode = nodes[new Random().nextInt(nodes.length)];
-                DFSVisit(startNode, 0);
+                DFSVisit(startNode, 0, visited); // Pass visited array to DFSVisit
 
                 Node maxDepthNode = findMaxDepthNode();
+                maxLength = Math.max(maxLength, maxDepthNode.depth);
                 resetNodes();
-                DFSVisit(maxDepthNode, 0);
+                Arrays.fill(visited, false); // Reset visited array
+                DFSVisit(maxDepthNode, 0, visited); // Pass visited array to DFSVisit
 
                 maxLength = Math.max(maxLength, findMaxDepthNode().depth);
             }
@@ -128,7 +139,7 @@ class Graph {
     }
 }
 
-public class DFSHeuristic {
+public class IterativeDFS {
     public void runner(String p_file) throws FileNotFoundException {
         File file = new File(p_file);
         Scanner sc = new Scanner(file);
@@ -157,7 +168,7 @@ public class DFSHeuristic {
         System.out.println();
     }
     public static void main(String args[]) throws FileNotFoundException {
-        DFSHeuristic dfs = new DFSHeuristic();
+        IterativeDFS dfs = new IterativeDFS();
         dfs.runner("Graphs/smallgraph.txt");
         dfs.runner("Graphs/graph300r28.txt");
         dfs.runner("Graphs/graph400r26.txt");

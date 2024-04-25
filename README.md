@@ -21,8 +21,7 @@
     ├── DijkstraMax.java               # Dijkstra LSP
     ├── DFSHeuristic.java              # DFS LSP
     ├── AStarHeuristic.java            # A* LSP
-    ├──
-    └─
+    └── IterativeDFS.java              # Iterative DFS
 
 ## Running Each File
 
@@ -48,6 +47,7 @@ public static void main(String args[]) throws FileNotFoundException {
     }
 ```
 
+- To run the DFS based algorithms run faster there is a MAX_ATTEMPTS global variable you can set it to some smaller number.
 - Use Positional graphs for A\* and Other normal graphs for other algorithms
 
 <p>Also you can directly use the graph generator or if you want to tune the values of <code>n</code> or <code>r</code> you can do that in the GraphGenerator file on lines 14 and 15</p>
