@@ -19,7 +19,7 @@ class Node {
 class Graph {
     private int V;
     private LinkedList<Node> adj[];
-
+    public double maxDist;
     Graph(int v) {
         V = v;
         adj = new LinkedList[v];
@@ -33,73 +33,35 @@ class Graph {
         adj[w.id].add(v);
     }
 
-    void aStarMax(int s, int d, Node[] nodes) {
-        double dist[] = new double[V];
-        int prev[] = new int[V];
-        boolean inQueue[] = new boolean[V];
-        PriorityQueue<Node> pq = new PriorityQueue<>(new Comparator<Node>() {
-            @Override
-            public int compare(Node node1, Node node2) {
-                return Double.compare(node2.dist + node2.h, node1.dist + node1.h);
-            }
-        });
-        for (int i = 0; i < V; i++){
-            if(nodes[i] == null){
-                continue;
-            }
-            nodes[i].h = Math.sqrt(Math.pow(nodes[i].x - nodes[d].x, 2) + Math.pow(nodes[i].y - nodes[d].y, 2)); // Euclidean distance
+    double iterativeDeepeningAStarMax(int s, Node[] nodes) {
+        double threshold = nodes[s].h;
+        while (true) {
+            double temp = search(nodes[s], 0, threshold, nodes);
+            if (temp == -1) return maxDist;
+            if (temp == Double.POSITIVE_INFINITY) return maxDist;
+            threshold = temp;
         }
-        for (int i = 0; i < V; i++) {
-            if(nodes[i] == null){
-                continue;
-            }
-            if (i == s) {
-                dist[i] = 0;
-            }else{
-                dist[i] = Double.NEGATIVE_INFINITY;
-            }
-            prev[i] = -1;
-            inQueue[i] = true;
-            pq.add(new Node(i, nodes[i].x, nodes[i].y, dist[i], nodes[i].h)); // Negative heuristic value
-        }
-        while (!pq.isEmpty()) {
-            Node u = pq.poll();
-            inQueue[u.id] = false;
-            if (u.dist != dist[u.id]) {
-                continue;
-            }
+    }
 
-            for (Node v : adj[u.id]) {
-                if (dist[v.id] < dist[u.id] + 1 && inQueue[v.id] && prev[u.id] != v.id) { // Check if the predecessor of u is not v
-                    dist[v.id] = dist[u.id] + 1;
-                    prev[v.id] = u.id;
-                    inQueue[v.id] = true;
-                    pq.add(new Node(v.id, nodes[v.id].x, nodes[v.id].y, dist[v.id], dist[v.id] + nodes[v.id].h)); // Negative heuristic value
-                }
+    double search(Node node, double g, double threshold, Node[] nodes) {
+        double f = g + node.h;
+        if (f > threshold) return f;
+        double min = Double.POSITIVE_INFINITY;
+        for (Node nextNode : adj[node.id]) {
+            if (nextNode.id == node.id) continue; // Skip if the next node is the same as the current node
+            double temp = search(nextNode, g + 1, threshold, nodes);
+            if (temp == -1) {
+                maxDist = Math.max(maxDist, g + 1); // Update maxDist if a leaf node is reached
+                return -1;
             }
+            if (temp < min) min = temp;
         }
-
-        // Print the longest path
-        double maxDist = 0;
-        int endNode = -1;
-        for (int i = 0; i < V; i++) {
-            if (dist[i] > maxDist) {
-                maxDist = dist[i];
-                endNode = i;
-            }
-        }
-
-        System.out.println("Longest path length: " + maxDist);
-        System.out.print("Path: ");
-        for (int v = endNode; v != -1; v = prev[v]) {
-            System.out.print(v + " ");
-        }
-        System.out.println();
+        return min;
     }
 }
 public class iterativeDeepeningAStar {
         public static void main(String[] args) throws FileNotFoundException {
-        File file = new File("Graphs/graphPositional300r28.txt"); // Specify your file name
+        File file = new File("Graphs/graphPositional.txt"); // Specify your file name
         Scanner sc = new Scanner(file);
 
         int maxVertex = 0;
@@ -130,6 +92,7 @@ public class iterativeDeepeningAStar {
         }
         scanner.close();
 
-        g.aStarMax(1, maxVertex, nodes); // Assuming 0 as the source node and maxVertex as the destination node
+        g.iterativeDeepeningAStarMax(2,  nodes); // Assuming 0 as the source node and maxVertex as the destination node
+        System.out.println(g.maxDist);
     }
 }

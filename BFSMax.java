@@ -31,49 +31,48 @@ class Graph {
        adj[w].add(v);
    }
 
-   void bfsMax(int s) {
-       int dist[] = new int[V];
+   void bfsMax(int s, int[] dist) {
        boolean visited[] = new boolean[V];
-       Queue<Node> queue = new LinkedList<>();
+       Queue<Integer> queue = new LinkedList<>();
 
        for (int i = 0; i < V; i++) {
-           if (i == s) {
-               dist[i] = 0;
-           }else{
-               dist[i] = Integer.MIN_VALUE;
-           }
-           prev[i] = -1;
+           dist[i] = Integer.MIN_VALUE;
            visited[i] = false;
        }
 
-       queue.add(new Node(s, dist[s]));
+       queue.add(s);
        visited[s] = true;
+       dist[s] = 0;
 
        while (!queue.isEmpty()) {
-           Node u = queue.poll();
+           int u = queue.poll();
 
-           for (int v : adj[u.id]) {
+           for (int v : adj[u]) {
                if (!visited[v]) {
-                   dist[v] = dist[u.id] + 1;
-                   prev[v] = u.id;
+                   dist[v] = dist[u] + 1;
                    visited[v] = true;
-                   queue.add(new Node(v, dist[v]));
+                   queue.add(v);
+                   prev[v] = u;
+                   if (dist[v] > maxDistance) {
+                       maxDistance = dist[v];
+                       maxEnd = v;
+                   }
                }
            }
        }
+   }
 
-       // Print the longest path
-       int maxDist = 0, endNode = -1;
-       for (int i = 0; i < V; i++) {
-           if (dist[i] > maxDist) {
-               maxDist = dist[i];
-               endNode = i;
-           }
-       }
-       if(maxDist>maxDistance){
-            maxDistance=maxDist;
-            maxEnd=endNode;
-       }
+   void findLongestPath() {
+       int dist[] = new int[V];
+
+       // First BFS to find one end point of
+       // longest path
+       bfsMax(0, dist);
+
+       // Second BFS to find actual longest path
+       bfsMax(maxEnd, dist);
+
+       System.out.println("Longest path length: " + maxDistance);
    }
 }
 
@@ -104,9 +103,7 @@ public class BFSMax {
         }
         scanner.close();
 
-        for(int i=0;i<maxVertex+1;i++){
-            g.bfsMax(i);
-        }
+        g.findLongestPath();
         System.out.println("Graph: " + p_file);
         System.out.println("Longest simple path length: " + Graph.maxDistance);
         System.out.println();

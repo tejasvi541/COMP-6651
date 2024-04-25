@@ -114,7 +114,7 @@ int[] dfs(int v, boolean[] visited) {
 
     public static void main(String[] args) throws FileNotFoundException {
         LargestConnectedComponent lcc = new LargestConnectedComponent();
-        lcc.runner("Graphs/graph.txt");
+        lcc.runner("Graphs/smallgraph.txt");
         lcc.runner("Graphs/graph300r28.txt");
         lcc.runner("Graphs/graph400r26.txt");
         lcc.runner("Graphs/graph500r24.txt");
